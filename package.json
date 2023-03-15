@@ -6,22 +6,21 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prepare": "husky install",
-    "lint": "eslint --ext .js,.cjs,.ts ."
+    "lint": "yarn lint:all:eslint && yarn lint:all:prettier",
+    "lint:all:eslint": "yarn lint:eslint --ext .ts,.js,.mjs,.cjs .",
+    "lint:all:prettier": "yarn lint:prettier \"**/*.{js,json,ts}\"",
+    "lint:eslint": "eslint --fix",
+    "lint:prettier": "prettier --write --loglevel warn",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.36.0",
     "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
-    "nuxt": "^3.3.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint"
-    },
-    "lint-staged": {
-      "*.{js,vue,jsx,ts,tsx}": "npm run lint:fix"
-    }
+    "nuxt": "^3.3.1",
+    "prettier": "^2.8.4"
   }
 }
