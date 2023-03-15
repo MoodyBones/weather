@@ -33,5 +33,8 @@
   "lint-staged": {
     "*.{js,vue,json,ts}": "prettier --write",
     "*": "eslint --fix"
+  },
+  "dependencies": {
+    "@picocss/pico": "^1.5.7"
   }
 }
