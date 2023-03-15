@@ -1,5 +1,7 @@
 <script setup>
-const { data } = useFetch('/api/forecasts')
+const { data: current } = await useFetch('/api/forecasts', {
+  pick: ['name', 'main', 'wind', 'sys'],
+})
 </script>
 
 <template>
@@ -9,9 +11,21 @@ const { data } = useFetch('/api/forecasts')
       <input type="text" name="city" placeholder="City" />
     </article>
     <article>
-      <h2>Here is the current data for {{ data.name }}</h2>
+      <h2>
+        Current weather for {{ current.name }},
+        {{ current.sys.country }}
+      </h2>
+      <h3>Temperature</h3>
       <ul>
-        <li>{{ data.main.temp }}</li>
+        <li v-for="(value, key, index) in current.main" :key="index">
+          {{ key }}: {{ value }}
+        </li>
+      </ul>
+      <h3>Wind</h3>
+      <ul>
+        <li v-for="(value, key, index) in current.wind" :key="index">
+          {{ key }}: {{ value }}
+        </li>
       </ul>
     </article>
   </div>
