@@ -9,19 +9,21 @@
     "lint": "yarn lint:all:eslint && yarn lint:all:prettier",
     "lint:all:eslint": "yarn lint:eslint --ext .ts,.js,.mjs,.cjs .",
     "lint:all:prettier": "yarn lint:prettier \"**/*.{js,json,ts}\"",
-    "lint:eslint": "eslint --fix",
+    "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write --loglevel warn",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.36.0",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "nuxt": "^3.3.1",
-    "prettier": "^2.8.4"
+    "prettier": "^2.8.4",
+    "typescript": "^4.9.5"
   },
   "husky": {
     "hooks": {
@@ -29,6 +31,7 @@
     }
   },
   "lint-staged": {
-    "*": "yarn lint"
+    "*.{js,vue,json,ts}": "prettier --write",
+    "*": "eslint --fix"
   }
 }
