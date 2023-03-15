@@ -4,5 +4,9 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "cSpell.words": ["antfu"]
+  "cSpell.words": [
+    
+    "antfu"
+  ],
+  "dotenv.enableAutocloaking": true
 }
