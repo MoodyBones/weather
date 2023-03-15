@@ -7,7 +7,12 @@ const appConfig = useAppConfig()
   <nav>
     <ul>
       <li>
-        <h1><img :src="logo" alt="logo" width="50" /> {{ appConfig.title }}</h1>
+        <h1>
+          <NuxtLink to="/">
+            <img :src="logo" alt="logo" width="50" />
+          </NuxtLink>
+          {{ appConfig.title }}
+        </h1>
       </li>
     </ul>
   </nav>
