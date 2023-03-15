@@ -1,5 +1,5 @@
 <script setup>
-import logo from '@/public/favicon.ico'
+import logo from '@/favicon.ico'
 const appConfig = useAppConfig()
 </script>
 
