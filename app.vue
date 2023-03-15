@@ -3,9 +3,12 @@ import '@picocss/pico'
 </script>
 
 <template>
-  <div class="container">
-    <h1>Weather</h1>
-    <label for="city">Search</label>
-    <input type="text" name="city" placeholder="City" />
-  </div>
+  <main class="container">
+    <TheNav />
+    <article data-theme="dark">
+      <label for="city">Search</label>
+      <input type="text" name="city" placeholder="City" />
+    </article>
+    <TheFooter />
+  </main>
 </template>
