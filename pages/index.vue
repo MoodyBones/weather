@@ -15,18 +15,24 @@ const { data: current } = await useFetch('/api/forecasts', {
         Current weather for {{ current.name }},
         {{ current.sys.country }}
       </h2>
-      <h3>Temperature</h3>
-      <ul>
-        <li v-for="(value, key, index) in current.main" :key="index">
-          {{ key }}: {{ value }}
-        </li>
-      </ul>
-      <h3>Wind</h3>
-      <ul>
-        <li v-for="(value, key, index) in current.wind" :key="index">
-          {{ key }}: {{ value }}
-        </li>
-      </ul>
+      <div class="grid">
+        <article data-theme="dark">
+          <h3>Temperature</h3>
+          <ul>
+            <li v-for="(value, key, index) in current.main" :key="index">
+              {{ key }}: {{ value }}
+            </li>
+          </ul>
+        </article>
+        <article data-theme="dark">
+          <h3>Wind</h3>
+          <ul>
+            <li v-for="(value, key, index) in current.wind" :key="index">
+              {{ key }}: {{ value }}
+            </li>
+          </ul>
+        </article>
+      </div>
     </article>
   </div>
 </template>
