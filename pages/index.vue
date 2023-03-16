@@ -6,10 +6,7 @@ const { data: current } = await useFetch('/api/forecasts', {
 
 <template>
   <div>
-    <article data-theme="dark">
-      <label for="city">Search</label>
-      <input type="text" name="city" placeholder="City" />
-    </article>
+    <SearchForm />
     <article>
       <h2>
         Current weather for {{ current.name }},
