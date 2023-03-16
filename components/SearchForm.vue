@@ -2,19 +2,45 @@
 const cityInput = ref(null)
 const newCityInput = ref('')
 const weather = ref(null)
+const err = ref(null)
 
 onMounted(() => {
   cityInput.value.focus()
 })
 
+function resetForm() {
+  err.value = null
+  weather.value = null
+}
+
+watchEffect(newCityInput, () => {
+  resetForm()
+})
+
 async function fetchData() {
   try {
-    const { data } = await useFetch(`/api/city/${newCityInput.value}`, {
+    // check input is not empty
+    if (!newCityInput.value) {
+      resetForm()
+      cityInput.value.focus()
+      throw createError('Please enter a city name')
+    }
+
+    // Fetch data
+    const { data, error } = await useFetch(`/api/city/${newCityInput.value}`, {
       pick: ['name', 'main', 'wind', 'sys'],
     })
-    weather.value = data
+    if (error.value) {
+      err.value = error.value
+      throw createError(error.value)
+    }
+
+    weather.value = data.value
+    newCityInput.value = ''
   } catch (error) {
-    console.log(error)
+    // log errors to console
+    console.error(error)
+    clearError()
   }
 }
 </script>
@@ -26,7 +52,8 @@ async function fetchData() {
       <input ref="cityInput" v-model.trim="newCityInput" />
       <button type="submit">Enter</button>
     </form>
-    <div v-if="weather">
+    <div v-if="err">Not found, please try again.</div>
+    <div v-else-if="weather">
       {{ weather }}
     </div>
   </article>
