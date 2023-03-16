@@ -4,9 +4,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "cSpell.words": [
-    
-    "antfu"
-  ],
+  "cSpell.words": ["pinia", "nuxtjs", "antfu"],
   "dotenv.enableAutocloaking": true
 }
