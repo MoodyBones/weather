@@ -1,8 +1,11 @@
 <script setup>
+import { useCityStore } from '~~/stores/cityStore'
+
 const cityInput = ref(null)
 const newCityInput = ref('')
 const weather = ref(null)
 const err = ref(null)
+const cityStore = useCityStore()
 
 onMounted(() => {
   cityInput.value.focus()
@@ -49,6 +52,14 @@ async function fetchData() {
 
     const { data, error } = await useFetch(
       `/api/geocoding/${newCityInput.value}`,
+      {
+        onResponse({ response }) {
+          // Process the response data
+          cityStore.setLat(response._data[0].lat)
+          cityStore.setLon(response._data[0].lon)
+          return response._data
+        },
+      },
       {
         transform: data => ({
           name: data[0].name,
