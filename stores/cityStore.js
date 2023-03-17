@@ -4,8 +4,9 @@ export const useCityStore = defineStore('cityStore', {
   state: () => ({
     lat: 0,
     lon: 0,
+    isCityValid: false,
     city: {},
-    hasChanged: true,
+    hasCityChanged: false,
     cities: [],
     country: '',
   }),
@@ -19,8 +20,21 @@ export const useCityStore = defineStore('cityStore', {
     setLon(lon) {
       this.lon = lon
     },
-    setCity(city) {
-      this.city = city
+
+    async fetchWeatherCurrent() {
+      try {
+        if (this.lat === 0 || this.lon === 0) {
+          return createError('No coordinates provided')
+        }
+        this.city = await useFetch('/api/current', {
+          query: { lat: this.lat, lon: this.lon },
+          pick: ['name', 'main', 'wind', 'sys'],
+        })
+        this.hasCityChanged = true
+      } catch (error) {
+        console.log(error)
+        return clearError('/')
+      }
     },
   },
 

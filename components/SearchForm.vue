@@ -1,11 +1,12 @@
 <script setup>
-import { useCityStore } from '~~/stores/cityStore'
+import { useCityStore } from '@/stores/cityStore'
+
+const cityStore = useCityStore()
 
 const cityInput = ref(null)
 const newCityInput = ref('')
 const weather = ref(null)
 const err = ref(null)
-const cityStore = useCityStore()
 
 onMounted(() => {
   cityInput.value.focus()
@@ -26,6 +27,7 @@ async function fetchData() {
     if (!newCityInput.value) {
       resetForm()
       cityInput.value.focus()
+      cityStore.isCityValid = false
       throw createError('Please enter a city name')
     }
 
@@ -50,14 +52,19 @@ async function fetchData() {
     // * what it there is more than one result
     // * what if there is only one result
 
-    const { data, error } = await useFetch(
+    const { data } = await useFetch(
       `/api/geocoding/${newCityInput.value}`,
       {
+        // async interceptor to hook into lifecycle events of ofetch call.
         onResponse({ response }) {
-          // Process the response data
-          cityStore.setLat(response._data[0].lat)
-          cityStore.setLon(response._data[0].lon)
-          return response._data
+          // set lat & lon in store
+          if (response._data.length) {
+            cityStore.setLat(response._data[0].lat.toFixed(2))
+            cityStore.setLon(response._data[0].lon.toFixed(2))
+            cityStore.isCityValid = true
+            cityStore.fetchWeatherCurrent()
+            return response._data
+          }
         },
       },
       {
@@ -69,15 +76,13 @@ async function fetchData() {
         }),
       }
     )
-    if (error.value) {
-      err.value = error.value
-      throw createError(error.value)
-    }
 
     weather.value = data.value
     newCityInput.value = ''
   } catch (error) {
     // log errors to console
+    err.value = error
+    cityStore.isCityValid = false
     console.error(error)
     clearError()
   }
@@ -92,7 +97,7 @@ async function fetchData() {
       <button type="submit">Enter</button>
     </form>
     <div v-if="err">Not found, please try again.</div>
-    <div v-else-if="weather">
+    <div v-if="weather?.length">
       {{ weather }}
     </div>
   </article>
