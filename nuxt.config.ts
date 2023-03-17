@@ -3,4 +3,5 @@ export default defineNuxtConfig({
   runtimeConfig: {
     openWeatherApiToken: '', // must match env var name, excluding nuxt prefix
   },
+  modules: ['@pinia/nuxt'],
 })
