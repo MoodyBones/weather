@@ -3,24 +3,30 @@ import { useCityStore } from '@/stores/cityStore'
 
 const cityStore = useCityStore()
 
-// not working
-try {
-  const { data, error } = await useAsyncData('current', () =>
-    cityStore.fetchWeatherCurrent()
-  )
-} catch (error) {
-  console.log(error)
-  // return createError(error)
+// destructure & make them reactive
+
+if (cityStore.isCityValid) {
+  const {
+    data: current,
+    error,
+    pending,
+  } = await useFetch('/api/current', {
+    query: { lat: cityStore.lat, lon: cityStore.lon },
+    pick: ['name', 'main', 'wind', 'sys'],
+  })
+  current.value = data
+  if (error) console.log('error', error)
+  if (pending) console.log('pending', pending)
 }
 </script>
 
 <template>
   <article>
-    <div v-if="error">
+    <div v-if="error?.length">
       {{ error }}
     </div>
-    <div v-else-if="data">
-      {{ data?.city.data }}
+    <div v-if="current?.length">
+      {{ current }}
     </div>
     <!-- TODO fill with data when working -->
     <!-- <h2>
