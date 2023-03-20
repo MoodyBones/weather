@@ -2,20 +2,23 @@
 import { useCityStore } from '@/stores/cityStore'
 
 const cityStore = useCityStore()
+let showCurrent = ref(false)
 
 watchEffect(() => {
-  if (cityStore.validCity) {
-    cityStore.fetchWeatherCurrent()
+  if (cityStore.lat || cityStore.lon) {
+    console.log(`lat ${cityStore.lat} or ${cityStore.lon} changed`)
+
+    if (cityStore.isCityValid) {
+      console.log('city is valid')
+      showCurrent = true
+    }
   }
 })
-// const { data: current } = await useFetch('/api/forecasts', {
-//   pick: ['name', 'main', 'wind', 'sys'],
-// })
 </script>
 
 <template>
   <div>
     <SearchForm />
-    <WeatherCurrentCard v-if="cityStore.validCity" />
+    <WeatherCurrentCard v-if="showCurrent" />
   </div>
 </template>
