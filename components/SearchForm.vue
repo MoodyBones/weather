@@ -7,6 +7,7 @@ const cityInput = ref(null)
 const newCityInput = ref('')
 const weather = ref(null)
 const err = ref(null)
+const selectedCity = ref(null)
 
 onMounted(() => {
   cityInput.value.focus()
@@ -20,6 +21,12 @@ function resetForm() {
 watchEffect(newCityInput, () => {
   resetForm()
 })
+
+function addValidCityToStore(lat, lon) {
+  cityStore.setLat(lat)
+  cityStore.setLon(lon)
+  cityStore.isCityValid = true
+}
 
 async function fetchData() {
   try {
@@ -59,10 +66,11 @@ async function fetchData() {
         onResponse({ response }) {
           // set lat & lon in store
           if (response._data.length) {
-            cityStore.setLat(response._data[0].lat.toFixed(2))
-            cityStore.setLon(response._data[0].lon.toFixed(2))
-            cityStore.isCityValid = true
-            cityStore.fetchWeatherCurrent()
+            addValidCityToStore(
+              response._data[0].lat.toFixed(2),
+              response._data[0].lon.toFixed(2)
+            )
+
             return response._data
           }
         },
@@ -87,6 +95,15 @@ async function fetchData() {
     clearError()
   }
 }
+
+watchEffect(() => {
+  if (selectedCity.value) {
+    if (selectedCity.value.lat || selectedCity.value.lon) {
+      console.log('selected')
+      addValidCityToStore(selectedCity.value.lat, selectedCity.value.lon)
+    }
+  }
+})
 </script>
 
 <template>
@@ -98,7 +115,18 @@ async function fetchData() {
     </form>
     <div v-if="err">Not found, please try again.</div>
     <div v-if="weather?.length">
-      {{ weather }}
+      <ul>
+        <li v-for="(item, index) in weather" :key="index + item.name">
+          <input
+            v-model="selectedCity"
+            type="radio"
+            :value="{ lat: item.lat.toFixed(2), lon: item.lon.toFixed(2) }"
+          />
+          {{ item.name }}, {{ item.country }} |
+          <span>LAT: {{ item.lat.toFixed(2) }} |</span>
+          <span> LON: {{ item.lon.toFixed(2) }} </span>
+        </li>
+      </ul>
     </div>
   </article>
 </template>

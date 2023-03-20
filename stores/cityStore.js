@@ -20,6 +20,10 @@ export const useCityStore = defineStore('cityStore', {
     setLon(lon) {
       this.lon = lon
     },
+    setCoordinates(lat, lon) {
+      this.lat = lat
+      this.lon = lon
+    },
 
     async fetchWeatherCurrent() {
       try {
