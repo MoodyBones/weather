@@ -1,5 +1,4 @@
 <script setup>
-import logo from '@/favicon.ico'
 const appConfig = useAppConfig()
 </script>
 
@@ -8,10 +7,10 @@ const appConfig = useAppConfig()
     <ul>
       <li>
         <h1>
-          <NuxtLink to="/">
-            <img :src="logo" alt="logo" width="50" />
+          <NuxtLink to="/" class="flex">
+            <img src="/logo.png" :alt="`${appConfig.title} logo`" width="50" />
+            {{ appConfig.title }}
           </NuxtLink>
-          {{ appConfig.title }}
         </h1>
       </li>
     </ul>
