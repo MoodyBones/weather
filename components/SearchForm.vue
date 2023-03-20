@@ -78,8 +78,8 @@ async function fetchData() {
       {
         transform: data => ({
           name: data[0].name,
-          lat: data[0].lat,
-          lon: data[0].lon,
+          lat: data[0].lat.toFixed(2),
+          lon: data[0].lon.toFixed(2),
           country: data[0].country,
         }),
       }
@@ -120,11 +120,11 @@ watchEffect(() => {
           <input
             v-model="selectedCity"
             type="radio"
-            :value="{ lat: item.lat.toFixed(2), lon: item.lon.toFixed(2) }"
+            :value="{ lat: item.lat, lon: item.lon }"
           />
           {{ item.name }}, {{ item.country }} |
-          <span>LAT: {{ item.lat.toFixed(2) }} |</span>
-          <span> LON: {{ item.lon.toFixed(2) }} </span>
+          <span>LAT: {{ item.lat }} |</span>
+          <span> LON: {{ item.lon }} </span>
         </li>
       </ul>
     </div>
