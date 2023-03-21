@@ -5,7 +5,7 @@ const cityStore = useCityStore()
 
 const cityInput = ref(null)
 const newCityInput = ref('')
-const weather = ref(null)
+const cityOptions = ref(null)
 const err = ref(null)
 const selectedCity = ref(null)
 
@@ -15,7 +15,7 @@ onMounted(() => {
 
 function resetForm() {
   err.value = null
-  weather.value = null
+  cityOptions.value = null
 }
 
 watchEffect(newCityInput, () => {
@@ -59,34 +59,22 @@ async function fetchData() {
     // * what it there is more than one result
     // * what if there is only one result
 
-    const { data } = await useFetch(
+    const { data: cities } = await useFetch(
       `/api/geocoding/${newCityInput.value}`,
       {
-        // async interceptor to hook into lifecycle events of ofetch call.
-        onResponse({ response }) {
-          // set lat & lon in store
-          if (response._data.length) {
-            addValidCityToStore(
-              response._data[0].lat.toFixed(2),
-              response._data[0].lon.toFixed(2)
-            )
-
-            return response._data
-          }
-        },
-      },
-      {
-        transform: data => ({
-          name: data[0].name,
-          lat: data[0].lat.toFixed(2),
-          lon: data[0].lon.toFixed(2),
-          country: data[0].country,
-        }),
+        transform: cities =>
+          cities.map(city => ({
+            name: city.name,
+            country: city.country,
+            geolocation: {
+              lat: city.lat.toFixed(2),
+              lon: city.lon.toFixed(2),
+            },
+          })),
       }
     )
 
-    weather.value = data.value
-    newCityInput.value = ''
+    cityOptions.value = cities.value
   } catch (error) {
     // log errors to console
     err.value = error
@@ -114,9 +102,9 @@ watchEffect(() => {
       <button type="submit">Enter</button>
     </form>
     <div v-if="err">Not found, please try again.</div>
-    <div v-if="weather?.length">
+    <div v-if="cityOptions?.length">
       <ul>
-        <li v-for="(item, index) in weather" :key="index + item.name">
+        <li v-for="(item, index) in cityOptions" :key="index + item.name">
           <input
             v-model="selectedCity"
             type="radio"
