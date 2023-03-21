@@ -2,23 +2,19 @@ import { defineStore } from 'pinia'
 
 export const useCityStore = defineStore('cityStore', {
   state: () => ({
-    lat: 0,
-    lon: 0,
-    isCityValid: false,
     city: {},
-    hasCityChanged: false,
     cities: [],
-    country: '',
+    hasCityChanged: false,
   }),
 
   // mutate stores state with actions
   // actions are methods
   actions: {
-    setLat(lat) {
-      this.lat = lat
+    setCity(city) {
+      this.city = city
     },
-    setLon(lon) {
-      this.lon = lon
+    previousCities(city) {
+      return this.cities.push(city)
     },
 
     async fetchWeatherCurrent() {

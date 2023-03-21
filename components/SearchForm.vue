@@ -3,14 +3,16 @@ import { useCityStore } from '@/stores/cityStore'
 
 const cityStore = useCityStore()
 
-const cityInput = ref(null)
+const inputRef = ref(null)
+const selectRef = ref(null)
+
 const newCityInput = ref('')
-const cityOptions = ref(null)
 const err = ref(null)
+const cityOptions = ref(null)
 const selectedCity = ref(null)
 
 onMounted(() => {
-  cityInput.value.focus()
+  inputRef.value.focus()
 })
 
 function resetForm() {
@@ -22,19 +24,12 @@ watchEffect(newCityInput, () => {
   resetForm()
 })
 
-function addValidCityToStore(lat, lon) {
-  cityStore.setLat(lat)
-  cityStore.setLon(lon)
-  cityStore.isCityValid = true
-}
-
 async function fetchData() {
   try {
     // check input is not empty
     if (!newCityInput.value) {
-      resetForm()
-      cityInput.value.focus()
-      cityStore.isCityValid = false
+      cityOptions.value = null
+      inputRef.value.focus()
       throw createError('Please enter a city name')
     }
 
@@ -44,8 +39,9 @@ async function fetchData() {
     // })
 
     // Fetch lat & lon by city name
-    // TODO: use this to validate the city name
-    // TODO: then fetch weather by lat & lon
+    // use this to validate the city name
+    // then fetch weather by lat & lon
+
     // Questions:
     // when should get the lat & lon?
     // what should I use the store for?
@@ -74,23 +70,28 @@ async function fetchData() {
       }
     )
 
-    cityOptions.value = cities.value
+    if (!cities.value.length) {
+      inputRef.value.focus()
+    } else if (cities.value.length === 1) {
+      cityStore.setCity(cities.value[0])
+    } else {
+      cityOptions.value = cities.value
+      nextTick(() => selectRef.value.focus())
+    }
   } catch (error) {
     // log errors to console
     err.value = error
-    cityStore.isCityValid = false
     console.error(error)
     clearError()
   }
 }
 
 watchEffect(() => {
-  if (selectedCity.value) {
-    if (selectedCity.value.lat || selectedCity.value.lon) {
-      console.log('selected')
-      addValidCityToStore(selectedCity.value.lat, selectedCity.value.lon)
-    }
-  }
+  // this effect will run immediately and then
+  // re-run whenever selectedCity.value changes
+  if (!selectedCity.value) return
+  cityStore.previousCities(selectedCity.value)
+  cityStore.setCity(selectedCity.value)
 })
 </script>
 
@@ -98,13 +99,13 @@ watchEffect(() => {
   <article data-theme="dark">
     <form @submit.prevent="fetchData">
       <label for="newCityInput">Search City</label>
-      <input ref="cityInput" v-model.trim="newCityInput" />
+      <input ref="inputRef" v-model.trim="newCityInput" />
       <button type="submit">Enter</button>
     </form>
-    <div v-if="err">Not found, please try again.</div>
+    <div v-if="err && !cityOptions">Not found, please try again.</div>
     <div v-if="cityOptions?.length">
       <label>Select you city:</label>
-      <select v-model="selectedCity">
+      <select ref="selectRef" v-model="selectedCity">
         <option
           v-for="(item, index) in cityOptions"
           :key="index + item.name"
