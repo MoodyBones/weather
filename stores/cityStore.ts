@@ -13,7 +13,7 @@ export const useCityStore = defineStore('cityStore', {
   state: () => ({
     city: null as CityInfo | null,
     cities: [] as CityInfo[],
-    hasCityChanged: false as boolean,
+    hasUpdated: false as boolean,
   }),
 
   // actions are methods

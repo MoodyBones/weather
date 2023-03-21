@@ -1,5 +1,5 @@
 <script setup>
-import { useCityStore } from '@/stores/cityStore'
+import { useCityStore } from '~/stores/cityStore'
 
 const cityStore = useCityStore()
 
@@ -74,6 +74,7 @@ async function fetchData() {
       inputRef.value.focus()
     } else if (cities.value.length === 1) {
       cityStore.setCity(cities.value[0])
+      cityStore.hasUpdated = true
     } else {
       cityOptions.value = cities.value
       nextTick(() => selectRef.value.focus())
@@ -92,6 +93,7 @@ watchEffect(() => {
   if (!selectedCity.value) return
   cityStore.previousCities(selectedCity.value)
   cityStore.setCity(selectedCity.value)
+  cityStore.hasUpdated = true
 })
 </script>
 
