@@ -103,18 +103,18 @@ watchEffect(() => {
     </form>
     <div v-if="err">Not found, please try again.</div>
     <div v-if="cityOptions?.length">
-      <ul>
-        <li v-for="(item, index) in cityOptions" :key="index + item.name">
-          <input
-            v-model="selectedCity"
-            type="radio"
-            :value="{ lat: item.lat, lon: item.lon }"
-          />
-          {{ item.name }}, {{ item.country }} |
-          <span>LAT: {{ item.lat }} |</span>
-          <span> LON: {{ item.lon }} </span>
-        </li>
-      </ul>
+      <label>Select you city:</label>
+      <select v-model="selectedCity">
+        <option
+          v-for="(item, index) in cityOptions"
+          :key="index + item.name"
+          :value="item"
+        >
+          {{ item.country }}, {{ item.name }},
+          <span>LAT: {{ item.geolocation.lat }}, </span>
+          <span> LON: {{ item.geolocation.lon }} </span>
+        </option>
+      </select>
     </div>
   </article>
 </template>
